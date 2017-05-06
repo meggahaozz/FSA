@@ -127,6 +127,10 @@ class MainApplication(Frame):
         self.b8 = Button(self.parent, text="Eliminate epsilon loops", bd=5, bg="#76d275", font=myFont, command=self.elimEps)
         self.b8.grid(row=18, column=1)
 
+        ttk.Separator(self.parent, orient=HORIZONTAL).grid(row=19, columnspan=5, sticky="ew")
+        self.b9 = Button(self.parent, text="DFA from regex", bd=5, bg="#76d275", font=myFont, command=self.fromRe)
+        self.b9.grid(row=20, column=0)
+
         print "gui initialized"
 
 
@@ -417,6 +421,17 @@ class MainApplication(Frame):
         else:
             tkMessageBox.showinfo("info", "DFA doesn't have any epsylon loops!")
         print "elim eps"
+
+    def fromRe(self):
+        inp = str(self.e5.get('1.0', END))
+        try:
+            r = str2regexp(inp)
+            self.automaton = r.toDFA()
+            self.update()
+            print "created from regex: " + str(r)
+        except Exception as ex:
+            tkMessageBox.showinfo("info", "Something wrong with your regex...")
+
 
     # TODO remove this shit when finish
     def donothing(self):
