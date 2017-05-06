@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 '''
-    version: 0.8.0
+    version: 0.9.0
     -creating FSA from input
     -determining FSA
     -minimizing FSA
@@ -9,6 +9,7 @@
     -save/load FSA in .fa format
     -test sequences feature
     -epsilon loops
+    -DFA from REGEX
     ### add tutorial
 
     ---------------------------------------
@@ -39,8 +40,8 @@ class MainApplication(Frame):
         self.automaton = NFA()
         self.parent.title("Finite-State Automaton Handler v0.8.0")
         # initialize GUI
-        self.menuBar = Menu(self.parent, background="#76d275", foreground='#97b498',
-                            activebackground='#43a047', activeforeground='#97b498')
+        self.menuBar = Menu(self.parent, background="#76d275", foreground='#000000',
+                            activebackground='#43a047', activeforeground='#000000')
         self.parent.config(menu=self.menuBar)
         self.fileMenu = Menu(self.menuBar, tearoff=0)
         self.fileMenu.add_command(label="Open", command=self.load_file)
@@ -50,7 +51,16 @@ class MainApplication(Frame):
         self.helpMenu = Menu(self.menuBar, tearoff=0)
         self.helpMenu.add_command(label="How to", command=self.howTo)
         self.helpMenu.add_command(label="About", command=self.about)
+        self.actMenu = Menu(self.menuBar, tearoff=0)
+        self.actMenu.add_command(label="To DFA", command=self.determine)
+        self.actMenu.add_command(label="Minimize", command=self.minimizeDFA)
+        self.actMenu.add_command(label="Draw FSA", command=self.displayImg)
+        self.actMenu.add_command(label="Add eps loops", command=self.addEps)
+        self.actMenu.add_command(label="Remove eps loops", command=self.elimEps)
+        self.actMenu.add_command(label="Create FSA from CFG", command=self.CFGToFSA)
+        self.actMenu.add_command(label="Create DFA from Regex", command=self.fromRe)
         self.menuBar.add_cascade(label="File", menu=self.fileMenu)
+        self.menuBar.add_cascade(label="Actions", menu=self.actMenu)
         self.menuBar.add_cascade(label="Help", menu=self.helpMenu)
 
         myFont = Font(family="Times New Roman", size=12, weight='bold')
@@ -96,10 +106,8 @@ class MainApplication(Frame):
 
         self.b1 = Button(self.parent, text="Create FSA", bd=5, bg="#76d275", font=myFont, command=self.getFSAFromInput)
         self.b1.grid(row=12, column=0)
-        self.b7 = Button(self.parent, text="Create FSA from CFG", bd=5, bg="#76d275", font=myFont, command=self.CFGToFSA)
-        self.b7.grid(row=12, column=1)
         self.b3 = Button(self.parent, text="Clear", bd=5, bg="#76d275", font=myFont, command=self.clearAll)
-        self.b3.grid(row=12, column=2)
+        self.b3.grid(row=12, column=1)
 
         ttk.Separator(self.parent, orient=HORIZONTAL).grid(row=13, columnspan=5, sticky="ew")
         # test word entry with button
@@ -107,29 +115,6 @@ class MainApplication(Frame):
         self.e6.grid(row=14, column=0)
         self.b2 = Button(self.parent, text="Test word", bd=5, bg="#76d275", font=myFont, command=self.applyWordToFSA)
         self.b2.grid(row=14, column=1)
-        ttk.Separator(self.parent, orient=HORIZONTAL).grid(row=15, columnspan=5, sticky="ew")
-
-        # display img button
-        self.b4 = Button(self.parent, text="Draw FSA", bd=5, bg="#76d275", font=myFont, command=self.displayImg)
-        self.b4.grid(row=16, column=1)
-
-        # minimize button
-        self.b5 = Button(self.parent, text="Minimize FSA", bd=5, bg="#76d275", font=myFont, command=self.minimizeDFA)
-        self.b5.grid(row=16, column=0)
-
-        # determine button
-        self.b6 = Button(self.parent, text="Determine", bd=5, bg="#76d275", font=myFont, command=self.determine)
-        self.b6.grid(row=16, column=2)
-
-        ttk.Separator(self.parent, orient=HORIZONTAL).grid(row=17, columnspan=5, sticky="ew")
-        self.b7 = Button(self.parent, text="Add epsilon loops", bd=5, bg="#76d275", font=myFont, command=self.addEps)
-        self.b7.grid(row=18, column=0)
-        self.b8 = Button(self.parent, text="Eliminate epsilon loops", bd=5, bg="#76d275", font=myFont, command=self.elimEps)
-        self.b8.grid(row=18, column=1)
-
-        ttk.Separator(self.parent, orient=HORIZONTAL).grid(row=19, columnspan=5, sticky="ew")
-        self.b9 = Button(self.parent, text="DFA from regex", bd=5, bg="#76d275", font=myFont, command=self.fromRe)
-        self.b9.grid(row=20, column=0)
 
         print "gui initialized"
 
